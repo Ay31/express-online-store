@@ -3,7 +3,7 @@ var express = require('express')
 var path = require('path')
 var cookieParser = require('cookie-parser')
 var logger = require('morgan')
-var bodyParser = require('body-parser');
+var bodyParser = require('body-parser')
 
 const mongoose = require('mongoose')
 
@@ -15,14 +15,16 @@ var app = express()
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'))
-app.set('view engine', 'jade')
+app.set('view engine', 'ejs')
 
 // mongoose.connect(`mongodb://localhost:27017/test`)
 
 mongoose
-    .connect('mongodb://localhost:27017/store', {
+    .connect(process.env.MONGO_URI || `mongodb://localhost:27017/store`, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
+        user: process.env.MONGO_USER,
+        pass: process.env.MONGO_PASSWORD,
     })
     .then(() => console.log('connect suc'))
 
@@ -45,11 +47,11 @@ app.all('*/', function (req, res, next) {
 // app.use(express.urlencoded({ extended: false }))
 // app.use(cookieParser())
 // app.use(express.static(path.join(__dirname, 'public')))
-app.use(logger('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(logger('dev'))
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(cookieParser())
+app.use(express.static(path.join(__dirname, 'public')))
 
 app.use('/', index)
 app.use('/users', users)
